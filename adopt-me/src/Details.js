@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { withRouter } from "react-router-dom";
+import ThemeContext from "./ThemeContext";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
 import Modal from "./Modal";
@@ -40,7 +41,16 @@ class Details extends Component {
         <div>
           <h1>{name}</h1>
           <h2>{`${animal} - ${breed} - ${city}, ${state}`}</h2>
-          <button onClick={this.toggleModal}>Adopt {name}</button>
+          <ThemeContext.Consumer>
+            {([theme]) => (
+              <button
+                onClick={this.toggleModal}
+                style={{ backgroundColor: theme }}
+              >
+                Adopt {name}
+              </button>
+            )}
+          </ThemeContext.Consumer>
           <p>{description}</p>
           {showModal ? (
             <Modal>
@@ -48,7 +58,7 @@ class Details extends Component {
                 <h1>Would you like to adopt {name}?</h1>
                 <div className="buttons">
                   <button onClick={this.adopt}> Yes</button>
-                  <button onClick={this.toggleModal}>No, I'm a monster</button>
+                  <button onClick={this.toggleModal}>No</button>
                 </div>
               </div>
             </Modal>
@@ -61,10 +71,10 @@ class Details extends Component {
 
 const DetailsWithRouter = withRouter(Details);
 
-export default function DetailsWithErrorBoundary() {
+export default function DetailsWithErrorBoundary(props) {
   return (
     <ErrorBoundary>
-      <DetailsWithRouter />
+      <DetailsWithRouter {...props} />
     </ErrorBoundary>
   );
 }
